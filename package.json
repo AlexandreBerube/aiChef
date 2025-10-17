@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "node": "^25.0.0",
+    "tailwindcss": "^4.1.14"
+  }
+}
