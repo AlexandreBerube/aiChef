@@ -1,9 +1,14 @@
-import OpenAI from "openai";
-const client = new OpenAI();
+import { GoogleGenAI } from "@google/genai";
 
-const response = await client.responses.create({
-    model: "gpt-5",
-    input: "Write a one-sentence bedtime story about a unicorn."
-});
+// The client gets the API key from the environment variable `GEMINI_API_KEY`.
+const ai = new GoogleGenAI({apiKey:process.env.GEMINI_API_KEY});
 
-console.log(response.output_text);
+async function main() {
+    const response = await ai.models.generateContent({
+        model: "gemini-2.5-flash",
+        contents: "Explain how AI works in a few words",
+    });
+    console.log(response.text);
+}
+
+main();

@@ -1,22 +1,27 @@
 {
   "name": "ai_chef_back",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Backend Node/Express pour AI Chef",
+  "type": "module",
+  "main": "src/index.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "ts-node-esm src/index.ts",
+    "test:gemini": "ts-node-esm src/geminiTest.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "aiChef": "file:../..",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
     "express": "^5.1.0",
+    "node-fetch": "^3.3.2",
     "openai": "^6.4.0"
   },
   "devDependencies": {
     "@types/express": "^5.0.3",
     "@types/node": "^24.7.2",
+    "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.9.3"
   }
