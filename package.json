@@ -1,6 +1,13 @@
 {
-  "dependencies": {
-    "node": "^25.0.0",
-    "tailwindcss": "^4.1.14"
+  "name": "aiChef",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"npm run dev --prefix app/client\" \"npm run dev --prefix app/server\"",
+    "build": "npm run build --prefix app/client && npm run build --prefix app/server",
+    "install-all": "npm install --prefix app/client && npm install --prefix app/server"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.0"
   }
 }
