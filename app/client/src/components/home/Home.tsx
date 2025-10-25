@@ -1,5 +1,7 @@
+// `app/client/src/components/home/Home.tsx`
 import {useState} from 'react';
 import "@/styles/style.css";
+import fouet from "@/assets/fouet.svg";
 
 function Search(props: { className?: string }) {
     return (
@@ -22,31 +24,35 @@ export function Home() {
     const [query, setQuery] = useState('');
 
     return (
-        <main className="flex flex-col justify-center items-center min-h-screen bg-[#fef5e2]">
-            <section className="w-full max-w-5xl flex flex-col items-center text-center">
-                <h1 className="text-3xl md:text-5xl font-semibold text-slate-800 mb-10">
-                    Quels ingrédients avez-vous sous la main aujourd’hui ?
-                </h1>
+        <main>
+            <section>
+                <h1>Quels ingrédients avez-vous sous la main aujourd’hui ?</h1>
 
-               <form>
-                <div className="w-full flex justify-center">
-                    <label className="search-pill flex items-center px-6 py-3 mx-auto">
-                        <Search className="text-slate-500 mr-3 w-5 h-5 shrink-0" />
-                        <input
-                            value={query}
-                            onChange={(e) => setQuery(e.target.value)}
-                            placeholder="oeuf, beurre, chocolat…"
-                            className="search-input w-full bg-transparent outline-none text-slate-700"
-                        />
-                    </label>
-                </div>
-               </form>
+                <form>
+                    <div className="search-container">
+                        <label className="search-pill" htmlFor="search-input">
+                            <Search className=""/>
+                            <input
+                                id="search-input"
+                                value={query}
+                                onChange={(e) => setQuery(e.target.value)}
+                                placeholder="oeuf, beurre, chocolat…"
+                                className="search-input"
+                            />
+                        </label>
 
-                <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-8 w-full">
-                    <div className="rounded-3xl bg-slate-400/80 ring-1 ring-slate-600/40 p-5 min-h-[220px]">
-                        <div className="text-white/95 font-medium">Résultats</div>
+                        <button
+                            type="submit"
+                            className="search-btn"
+                            aria-label="Rechercher"
+                        >
+                            <img src={fouet} alt="fouet" className="search-btn__img"/>
+                        </button>
                     </div>
-                    <div className="rounded-3xl bg-slate-400/80 ring-1 ring-slate-600/40 p-5 min-h-[220px]" />
+                </form>
+
+                <div className="results-card">
+                    <p className="results-text">Résultats</p>
                 </div>
             </section>
         </main>
