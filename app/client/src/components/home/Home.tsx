@@ -46,7 +46,7 @@ export function Home() {
                             className="search-btn"
                             aria-label="Rechercher"
                         >
-                            <img src={fouet} alt="fouet" className="search-btn__img"/>
+                            <img src={fouet} alt="fouet" className="search-btn_img"/>
                         </button>
                     </div>
                 </form>

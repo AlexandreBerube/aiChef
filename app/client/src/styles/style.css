@@ -147,12 +147,11 @@ h1 {
 .search-btn:hover,
 .search-btn:focus-visible {
     background-color: rgba(64, 77, 110, 0.75); /* couleur au survol */
-    transform: translateY(-50%) translateY(-4px); /* léger "lift" */
     box-shadow: 0 10px 24px rgba(16,24,40,0.12);
 }
 
 /* image centrée et contenu bien ajusté */
-.search-btn__img {
+.search-btn_img {
     width: 28px;
     height: 28px;
     object-fit: contain;
