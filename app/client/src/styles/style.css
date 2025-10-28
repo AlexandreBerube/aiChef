@@ -1,215 +1,251 @@
 @import "tailwindcss";
 @tailwind utilities;
 
-:root {
-    font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-    line-height: 1.5;
-    font-weight: 400;
-    color-scheme: light dark;
-    color: rgba(255, 255, 255, 0.87);
-    font-synthesis: none;
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+/* ====== Thème & bases ==================================================== */
+:root{
+    /* thème : change librement ces couleurs */
+    --primary:#9d00ff;
+    --secondary:#00e5ff;
+    --accent:#ff00e5;
+    --background:#fef2e2;
+    --text-primary:#374d70;
+    --text-secondary:#b8b8ff;
+
+    /* géométrie du carrousel */
+    --card-width: 260px;      /* fallback si pas de JS */
+    --card-height: 351px;
+    --carousel-radius: clamp(180px, 38vw, 420px);
+    --transition-speed:.5s;
 }
 
-body {
-    margin: 0;
-    min-width: 320px;
-    min-height: 100vh;
-    background-color: rgb(254, 245, 226);
+html,body{
+    height: 100%;
+    font-family: "Chakra Petch", system-ui, Avenir, Helvetica, Arial, sans-serif;
+    background: var(--background);
+    color: var(--text-primary);
+    /* overflow:hidden;  <-- ENLEVER ceci */
+    overflow-x: hidden;       /* garde le X caché si besoin */
+    overflow-y: auto;         /* laisse scroller */
+    display: block;           /* pas de grid sur <body> */
+}
+
+main {
     display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-direction: column;
+    min-height: 100vh;
+    box-sizing: border-box;
+    padding-top: 125px;   /* logo 100x100 -> laisse de la marge */
+    padding-bottom: 80px;/* espace pour le footer fixé */
 }
-
-a {
-    font-weight: 500;
-    color: #646cff;
-    text-decoration: inherit;
-}
-a:hover {
-    color: #535bf2;
-}
-
 h1 {
-    font-size: 1.5em;
-    line-height: 1.1;
-    margin: 10px;
+    margin: 0 auto 12px;
+    width: 100%;
+    max-width: 920px;  /* comme le pill */
+    text-align: center;
+    font-size: 1.6rem;
+    line-height: 1.2;
+    color: #374d70;    /* ton bleu */
 }
 
-/*adapte la couleur du texte*/
-@media (prefers-color-scheme: light) {
-    :root {
-        color: #213547;
-        background-color: #ffffff;
-    }
-    a:hover {
-        color: #747bff;
-    }
-}
+a{ color:#646cff; text-decoration:none; font-weight:500; }
+a:hover{ color:#535bf2; }
 
-/*logo réduit en haut à gauche*/
+/* mode clair système : ajuste juste le texte des liens si tu veux
+@media (prefers-color-scheme: light){
+  a:hover{ color:#747bff; }
+}
+*/
+
+/* ====== Header/logo ====================================================== */
 .header-logo {
-    width: 100px;
-    height: 100px;
-    position: absolute;
+    position: fixed;   /* au lieu de absolute */
     top: 16px;
     left: 16px;
+    width: 100px;
+    height: 100px;
+    z-index: 1000;     /* au-dessus du carrousel */
+    pointer-events: none; /* si c'est purement déco */
+}
+/* ====== Barre de recherche =============================================== */
+.search-container{
+    position:relative; width:100%; max-width:920px; margin:0 auto; display:flex; align-items:center;
 }
 
-/*forme arrondie du champ de recherche*/
-.search-pill {
-    width: 100%;
-    margin: 0 auto;
-    padding: 0.55rem 1rem;
-    height: 60px;
-    border-radius: 9999px;
-    background: #e6e5dd;
-    border: 1px solid rgba(92, 99, 91, 0.35);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.7), 0 6px 18px rgba(16,24,40,0.06);
-    box-sizing: border-box;
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
+.search-pill{
+    width:75%; height:60px; padding:.55rem 1rem; margin:0 auto; box-sizing:border-box;
+    border-radius:9999px; display:flex; align-items:center; gap:.75rem;
+    background:#e6e5dd; border:1px solid rgba(92,99,91,.35);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.7), 0 6px 18px rgba(16,24,40,.06);
+}
+.search-pill:focus-within{
+    box-shadow:0 0 0 6px rgba(98,120,96,.08), inset 0 1px 0 rgba(255,255,255,.7);
+    border-color:rgba(80,110,80,.6);
+}
+.search-pill svg, .search-pill svg *{ width:18px!important; height:18px!important; flex:0 0 18px; }
+
+.search-input{
+    flex:1 1 auto; min-width:0; width:100%; height:100%;
+    background:transparent; border:none; padding:0; margin:0; font-size:.95rem; color:#374151;
+}
+.search-input:focus, .search-input:focus-visible{ outline:none; box-shadow:none; }
+.search-input::placeholder{ color:rgba(99,102,106,.65); font-style:italic; opacity:1; }
+
+/* bouton à droite du pill */
+.search-btn{
+    position:absolute; right:40px; top:50%; transform:translateY(-50%);
+    width:60px; height:60px; border-radius:9999px; padding:0;
+    background:#fff7ec; border:1px solid rgba(71,76,70,.44);
+    box-shadow:0 6px 18px rgba(16,24,40,.06);
+    display:inline-flex; align-items:center; justify-content:center; cursor:pointer; overflow:hidden;
+}
+.search-btn:hover, .search-btn:focus-visible{
+    background-color:rgba(64,77,110,.75); box-shadow:0 10px 24px rgba(16,24,40,.12);
+}
+.search-btn_img{ width:28px; height:28px; object-fit:contain; display:block; }
+
+/* Résultats */
+.results-card{
+    background:#374d70; color:#fff; padding:12px 16px; border-radius:12px;
+    width:100%; max-width:920px; margin:16px auto 0; box-shadow:0 6px 18px rgba(37,99,235,.12);
+}
+.results-text{ margin:0; font-weight:600; font-size:.95rem; line-height:1.25; }
+
+/* ====== Fond cosmique (optionnel) ======================================== */
+.cosmos-background{ position:fixed; inset:0; z-index:-1;
+    background:radial-gradient(ellipse at bottom,#1b2735 0%,#090a0f 100%); overflow:hidden;
+}
+.stars-container{
+    position:absolute; inset:0;
+    background-image:
+            radial-gradient(1px 1px at 25% 25%,white,rgba(0,0,0,0)),
+            radial-gradient(1px 1px at 50% 50%,white,rgba(0,0,0,0)),
+            radial-gradient(2px 2px at 75% 75%,white,rgba(0,0,0,0)),
+            radial-gradient(2px 2px at 100% 100%,white,rgba(0,0,0,0));
+    background-size:200px 200px,300px 300px,400px 400px,600px 600px;
+    animation:twinkle 10s linear infinite;
+}
+@keyframes twinkle{ to{ background-position:200px 200px,300px 300px,400px 400px,600px 600px; } }
+
+/* ====== Carrousel 3D ===================================================== */
+.carousel-container{
+    position:relative; width:100%; height: clamp(320px, 54vh, 560px);  /* laisse de la place à la recherche/footer */
+     min-height:260px; margin:8px auto 0; padding:0 16px; box-sizing:border-box;
+    perspective:1000px; transform-style:preserve-3d;
+    display:flex; justify-content:center; align-items:center; touch-action:none; overflow:hidden;
+}
+.carousel{
+    position:relative; width:100%; height:100%;
+    transform-style:preserve-3d; transition:transform .5s ease;
+    display:flex; align-items:center; justify-content:center;
 }
 
-.search-pill:focus-within {
-    box-shadow: 0 0 0 6px rgba(98,120,96,0.08), inset 0 1px 0 rgba(255,255,255,0.7);
-    border-color: rgba(80,110,80,0.6);
+/* ====== Cartes mémoire ==================================================== */
+.memory-card{
+    position:absolute; width:var(--card-width); height:var(--card-height);
+    left:50%; top:50%; margin-left:calc(var(--card-width)/-2); margin-top:calc(var(--card-height)/-2);
+    transform-style:preserve-3d; transition:transform var(--transition-speed) cubic-bezier(.175,.885,.32,1.275);
+    cursor:pointer;
+}
+.card-inner{
+    position:relative; width:100%; height:100%; transform-style:preserve-3d;
+    transition:transform var(--transition-speed) cubic-bezier(.175,.885,.32,1.275);
+}
+.memory-card:hover .card-inner{ transform:translateZ(20px); }
+.memory-card.flipped .card-inner{ transform:rotateY(180deg); }
+
+.card-front,.card-back{
+    position:absolute; inset:0; border-radius:15px; overflow:hidden; backface-visibility:hidden;
+    box-shadow:0 0 20px rgba(0,0,0,.5);
+}
+.card-front{
+    background:linear-gradient(135deg,rgba(30,30,60,.8),rgba(20,20,40,.9));
+    border:1px solid rgba(157,0,255,.3);
+}
+.card-back{
+    background:linear-gradient(135deg,rgba(20,20,40,.9),rgba(30,30,60,.8));
+    border:1px solid rgba(0,229,255,.3); transform:rotateY(180deg);
 }
 
-/*enlève le contour autour du input*/
-.search-input:focus,
-.search-input:focus-visible {
-    outline: none;
-    box-shadow: none;
+.card-content{ padding:20px; height:100%; display:flex; flex-direction:column; position:relative; color:var(--text-primary); }
+.memory-date{ font-size:.8rem; color:var(--accent); margin-bottom:10px; text-shadow:0 0 6px rgba(255,0,229,.6); }
+.memory-card h3{ font-size:1.5rem; margin-bottom:15px; }
+.memory-image{
+    width:100%; height:150px; margin-bottom:15px; display:flex; justify-content:center; align-items:center;
+    position:relative; overflow:hidden; border-radius:8px; background:rgba(0,0,0,.25);
+}
+.memory-image img{ max-width:100%; max-height:100%; object-fit:cover; z-index:2; }
+
+.glitch-effect{
+    position:absolute; inset:0; z-index:1;
+    background:linear-gradient(45deg,transparent 65%, rgba(157,0,255,.3) 70%, transparent 75%);
+    background-size:200% 200%; animation:glitch 3s linear infinite;
+}
+@keyframes glitch{
+    0%{background-position:0 0;} 25%{background-position:100% 0;}
+    50%{background-position:100% 100%;} 75%{background-position:0 100%;}
+    100%{background-position:0 0;}
 }
 
-/* placeholder en grisé et italique*/
-.search-input {
-    flex: 1 1 auto;
-    min-width: 0;
-    width: 100%;
-    height: 100%;
-    background: transparent;
-    border: none;
-    padding: 0;
-    margin: 0;
-    font-size: 0.95rem;
-    color: #374151;
+.memory-preview, .card-back .card-content p{
+    font-size:.9rem; color:var(--text-secondary); line-height:1.5; flex-grow:1; margin-bottom:15px;
 }
-
-.search-input::placeholder {
-    color: rgba(99,102,106,0.65);
-    font-style: italic;
-    opacity: 1;
+.memory-coordinates{ font-size:.8rem; color:var(--secondary); display:flex; flex-direction:column; gap:5px; }
+.time-stamp{ color:var(--accent); }
+.card-glow{
+    position:absolute; inset:0; border-radius:15px; pointer-events:none;
+    background:radial-gradient(circle at 50% 50%, rgba(157,0,255,.1), transparent 70%);
+    opacity:0; transition:opacity .3s ease;
 }
+.memory-card:hover .card-glow{ opacity:1; }
 
-/*dimension de la loupe*/
-.search-pill svg,
-.search-pill svg * {
-    width: 18px !important;
-    height: 18px !important;
-    flex: 0 0 18px;
+/* ====== Contrôles ======================================================== */
+.carousel-controls{
+    position:absolute; bottom:-1px; left:50%; transform:translateX(-50%);
+    display:flex; gap:12px; z-index:10; padding-bottom: 8px;
 }
-
-/* conteneur relatif pour aligner le bouton à droite du pill */
-.search-container {
-    position: relative;
-    width: 100%;
-    max-width: 920px; /* doit correspondre à .search-pill max-width */
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
+.control-btn{
+    width:40px; height:40px; border-radius:50%;
+    background:rgba(20,20,40,.7); border:1px solid var(--primary); color:var(--text-primary);
+    display:grid; place-items:center; cursor:pointer;
+    transition:transform .2s ease, background .2s ease;
+    box-shadow:0 0 10px rgba(157,0,255,.3);
 }
+.control-btn:hover{ background:rgba(30,30,60,.9); transform:scale(1.1); }
 
-/* bouton rond blanc placé juste à droite et centré verticalement */
-.search-btn {
-    position: absolute;
-    right: -70px; /* ajuste l'espacement horizontal souhaité */
-    top: 50%;
-    transform: translateY(-50%);
-    width: 60px;   /* même hauteur que .search-pill */
-    height: 60px;
-    border-radius: 9999px;
-    background: #fff7ec;
-    border: 1px solid rgba(71, 76, 70, 0.44);
-    box-shadow: 0 6px 18px rgba(16,24,40,0.06);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-    cursor: pointer;
-    overflow: hidden;
+/* ====== Variantes & responsive ========================================== */
+/* version compacte : applique la classe .carousel--compact à un parent du carrousel */
+.carousel--compact{
+    --card-width:140px; --card-height:190px; --carousel-radius:180px; --transition-speed:.35s;
 }
-
-.search-btn:hover,
-.search-btn:focus-visible {
-    background-color: rgba(64, 77, 110, 0.75); /* couleur au survol */
-    box-shadow: 0 10px 24px rgba(16,24,40,0.12);
+.carousel--compact .carousel-container{
+    height:calc(100vh - 160px); max-height:260px; min-height:180px; padding:0 8px;
 }
+.carousel--compact .carousel{ width:min(420px,95%); }
+.carousel--compact .memory-image{ height:90px; }
+.carousel--compact .memory-card h3{ font-size:1rem; margin-bottom:8px; }
+.carousel--compact .memory-preview, .carousel--compact .card-back .card-content p{ font-size:.8rem; }
+.carousel--compact .control-btn{ width:32px; height:32px; font-size:.9rem; }
+.carousel--compact .carousel-controls{ bottom:-20px; gap:12px; }
+.carousel--compact .memory-card:hover .card-inner{ transform:translateZ(8px); }
+.carousel--compact .card-glow{ opacity:0; transition:opacity .25s ease; }
+.carousel--compact .memory-card:hover .card-glow{ opacity:.7; }
 
-/* image centrée et contenu bien ajusté */
-.search-btn_img {
-    width: 28px;
-    height: 28px;
-    object-fit: contain;
-    display: block;
+/* points de rupture */
+@media (max-width:768px){
+    :root{ --card-width:250px; --card-height:350px; --carousel-radius:300px; }
+    .carousel-container{ height:400px; }
+    .memory-card h3{ font-size:1.2rem; }
+    .memory-image{ height:120px; }
 }
-
-/* site-footer : bordure en haut de 3px, texte centré, position relative pour le sticker */
-.site-footer {
-    border-top: none; /* retirer la bordure pleine largeur */
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    box-sizing: border-box;
-    background: transparent;
-    padding: 28px 16px 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 40;
+@media (max-width:576px){
+    :root{
+        --card-width: clamp(190px, 60vw, 240px);
+        --card-height: calc(var(--card-width) * 1.35);
+        --carousel-radius: clamp(150px, 52vw, 280px);
+    }
+    .carousel-container{ height: clamp(300px, 58vh, 520px); }
 }
-
-/* texte centré et styling simple */
-.footer-text {
-    margin: 0;
-    color: #374151;
-    font-size: 0.95rem;
-    line-height: 1.3;
-}
-
-.site-footer::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: clamp(200px, 40%, 720px); /* ajuste la largeur: min 200px, max 720px, 40% du conteneur sinon */
-    height: 3px;
-    background: rgb(192, 149, 71);
-    pointer-events: none;
-}
-
-.results-card {
-    background: #374d70; /* bleu */
-    color: #ffffff; /* texte blanc par défaut */
-    padding: 12px 16px;
-    border-radius: 12px;
-    max-width: 920px;
-    width: 100%;
-    box-sizing: border-box;
-    margin: 16px auto 0;
-    box-shadow: 0 6px 18px rgba(37,99,235,0.12);
-}
-
-.results-text {
-    margin: 0;
-    font-weight: 600;
-    font-size: 0.95rem;
-    line-height: 1.25;
-    color: #ffffff;
+@media (max-width:400px){
+    .carousel-container{ height:calc(100vh - 200px); }
+    :root{ --card-width:250px; --card-height:340px; }
 }
