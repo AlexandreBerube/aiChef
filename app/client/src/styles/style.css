@@ -16,6 +16,10 @@
     --card-height: 351px;
     --carousel-radius: clamp(180px, 38vw, 420px);
     --transition-speed:.5s;
+
+    --card-title-lines: 2;
+    --card-preview-lines: 2;
+    --card-back-lines: 4;
 }
 
 html,body{
@@ -168,7 +172,11 @@ a:hover{ color:#535bf2; }
 
 .card-content{ padding:20px; height:100%; display:flex; flex-direction:column; position:relative; color:var(--text-primary); }
 .memory-date{ font-size:.8rem; color:var(--accent); margin-bottom:10px; text-shadow:0 0 6px rgba(255,0,229,.6); }
-.memory-card h3{ font-size:1.5rem; margin-bottom:15px; }
+.memory-card h3{  font-size: 1.2rem;   /* ↓ diminue pour compacter */
+    line-height: 1.3;
+    -webkit-line-clamp: var(--card-title-lines);
+    white-space: normal;
+    max-height: calc(1.2em * var(--card-title-lines));}
 .memory-image{
     width:100%; height:150px; margin-bottom:15px; display:flex; justify-content:center; align-items:center;
     position:relative; overflow:hidden; border-radius:8px; background:rgba(0,0,0,.25);
@@ -187,9 +195,13 @@ a:hover{ color:#535bf2; }
 }
 
 .memory-preview, .card-back .card-content p{
-    font-size:.9rem; color:var(--text-secondary); line-height:1.5; flex-grow:1; margin-bottom:15px;
+    font-size: 0.55rem;
+    line-height: 1.4;
+    -webkit-line-clamp: var(--card-preview-lines);
+    white-space: normal;
+    max-height: calc(1.2em * var(--card-title-lines));
 }
-.memory-coordinates{ font-size:.8rem; color:var(--secondary); display:flex; flex-direction:column; gap:5px; }
+.memory-coordinates{ font-size:.6rem; color:var(--secondary); display:flex; flex-direction:column; gap:5px; }
 .time-stamp{ color:var(--accent); }
 .card-glow{
     position:absolute; inset:0; border-radius:15px; pointer-events:none;
@@ -198,10 +210,20 @@ a:hover{ color:#535bf2; }
 }
 .memory-card:hover .card-glow{ opacity:1; }
 
+.memory-card h3.clamp,
+.memory-preview.clamp,
+.card-back .card-content p.clamp {
+    /* appliquer la technique webkit */
+    -webkit-box-orient: vertical;
+    display: -webkit-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 /* ====== Contrôles ======================================================== */
 .carousel-controls{
-    position:absolute; bottom:-1px; left:50%; transform:translateX(-50%);
-    display:flex; gap:12px; z-index:10; padding-bottom: 8px;
+    position:absolute; bottom:-10px; left:50%; transform:translateX(-50%);
+    display:flex; gap:10px; z-index:10; padding-bottom: 10px; margin-top: 8px;
 }
 .control-btn{
     width:40px; height:40px; border-radius:50%;
@@ -247,5 +269,15 @@ a:hover{ color:#535bf2; }
 }
 @media (max-width:400px){
     .carousel-container{ height:calc(100vh - 200px); }
-    :root{ --card-width:250px; --card-height:340px; }
+    :root{ --card-title-lines: 1;
+        --card-preview-lines: 1;
+        --card-back-lines: 2;}
+}
+
+.clamp {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-word;
 }

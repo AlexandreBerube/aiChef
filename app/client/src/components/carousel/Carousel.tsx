@@ -49,32 +49,37 @@ export function Carousel({
         const ro = new ResizeObserver(([entry]) => {
             const { width: cw, height: ch } = entry.contentRect;
 
-            // 1) contraintes/marges pour être sûr que ça ne coupe pas
-            const verticalPadding = 24;           // marge de sécurité haut/bas (px)
-            const horizontalPadding = 24;         // marge latérale
-            const maxCardHeight = Math.max(160, ch - verticalPadding * 2);
-            const maxCardWidth  = Math.max(140, cw - horizontalPadding * 2);
+            // marges de sécurité (px)
+            const verticalPadding = 16;   // marge top/bottom interne
+            const controlsHeight  = 56;   // boutons + offset (≈ 40px + marges)
+            const hoverTranslateZ = 20;   // effet hover .memory-card:hover .card-inner
+            const safeRoom = verticalPadding * 2 + controlsHeight + hoverTranslateZ;
 
-            // 2) ratio de la carte ~ 1.35 (comme ton CSS)
-            const ratio = 1.35;
+            // espace réellement disponible en hauteur
+            const availH = Math.max(140, ch - safeRoom);
 
-            // 3) on prend la plus petite dimension permissible en respectant le ratio
-            //    - si on limite par la hauteur -> width = height/ratio
-            //    - si on limite par la largeur -> height = width*ratio
-            let cardH = maxCardHeight * 0.92; // un peu de marge visuelle
+            // limite en largeur (pour éviter débordements latéraux)
+            const availW = Math.max(140, cw - 24 * 2);
+
+            const ratio = 1.35;       // H = W * 1.35
+            const frontScale = 0.40;  // <— réducteur “anti-troncature” (ajuste 0.80–0.92)
+
+            // 1) On essaie d'occuper la hauteur disponible
+            let cardH = availH * frontScale;
             let cardW = cardH / ratio;
-            if (cardW > maxCardWidth) {
-                cardW = maxCardWidth * 0.92;
+
+            // 2) Si ça dépasse la largeur, on borne par la largeur
+            if (cardW > availW) {
+                cardW = availW * frontScale;
                 cardH = cardW * ratio;
             }
 
-            // 4) pousse les variables CSS sur le container
+            // pousse les variables CSS sur le container (prioritaires sur :root)
             el.style.setProperty("--card-width", `${Math.round(cardW)}px`);
             el.style.setProperty("--card-height", `${Math.round(cardH)}px`);
 
-            // 5) rayon : proportionnel à la largeur dispo (évite sortie du container)
-            //    règle simple: ~45% de la largeur, borné
-            const r = Math.min(Math.max(cw * 0.45, cardW * 1.2), cw * 0.5);
+            // rayon proportionnel à la largeur dispo (jamais > 50% de la largeur)
+            const r = Math.min(Math.max(cw * 0.42, cardW * 1.15), cw * 0.5);
             setRadius(Math.round(r));
         });
 
@@ -198,6 +203,11 @@ export function Carousel({
         "--text-secondary": theme?.textSecondary,
     };
 
+    function truncate(text?: string, max = 120) {
+        if (!text) return "";
+        return text.length > max ? text.slice(0, max - 1).trim() + "…" : text;
+    }
+
     return (
         <div className="container-fluid h-100 d-flex flex-column" style={styleVars}>
             <div className="flex-grow-1 d-flex align-items-center justify-content-center position-relative">
@@ -244,7 +254,7 @@ export function Carousel({
                                                         ) : null}
                                                         <div className="glitch-effect"></div>
                                                     </div>
-                                                    {m.preview && <p className="memory-preview">{m.preview}</p>}
+                                                    {m.preview && <p className="memory-preview clamp">{truncate(m.preview,80)}</p>}
                                                     <div className="card-glow"></div>
                                                 </div>
                                             </div>
