@@ -1,6 +1,7 @@
 // app/client/src/components/home/Carousel3D.tsx
 import {useEffect, useMemo, useRef, useState} from "react";
 
+
 // Type générique pour tes résultats (adapte librement)
 export type CarouselItem = {
     id: string | number;
@@ -236,14 +237,14 @@ export function Carousel({
                                         <div className="card-inner">
                                             <div className="card-front">
                                                 <div className="card-content">
-                                                    <h3>{m.title}</h3>
+                                                    <p className="font-bold">{m.title}</p>
                                                     {m.preview && <p className="memory-preview">{m.preview}</p>}
                                                 </div>
                                             </div>
                                             <div className="card-back">
                                                 <div className="card-content">
-                                                    <h3>{m.title}</h3>
-                                                    {m.description && <p>{m.description}</p>}
+                                                    <h2>{m.title}</h2>
+                                                    {m.description && <p className="description-card-back">{m.description}</p>}
                                                     {(m.location || m.time) && (
                                                         <div className="memory-coordinates">
                                                             {m.location && <span>{m.location}</span>}

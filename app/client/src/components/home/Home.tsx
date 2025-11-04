@@ -64,7 +64,7 @@ export function Home() {
                 {loading && (
                     <div className="loader-container">
                         <div className="loader"></div>
-                        <p className="loader-text">Recherche de recettes...</p>
+                        <p className="loader-text text-black">Recherche de recettes...</p>
                     </div>
                 )}
 
