@@ -4,8 +4,10 @@ import "@/styles/style.css";
 export function Header() {
 
     return (
-        <header>
-            <img src={logo} alt="Logo AI Chef" className="header-logo"/>
-        </header>
+        <div className="inline-flex flex-col">
+            <header>
+                <img src={logo} alt="Logo AI Chef" className="header-logo"/>
+            </header>
+        </div>
     );
 }
