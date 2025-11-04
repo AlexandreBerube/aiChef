@@ -1,17 +1,24 @@
 @import "tailwindcss";
 @tailwind utilities;
 
-/* ====== Thème & bases ==================================================== */
+/* ====== Thème & bases (couleurs & opacités importées de style.module.css) ===== */
 :root{
-    /* thème : change librement ces couleurs */
-    --primary:#9d00ff;
-    --secondary:#00e5ff;
-    --accent:#ff00e5;
-    --background:#fef2e2;
-    --text-primary:#374d70;
-    --text-secondary:#b8b8ff;
+    /* PALETTE depuis style.module.css */
+    --primary: rgba(255, 234, 0, 0.43);
+    --secondary: #374d6f;
+    --accent: #fef0e5;
+    --background: #fef1e4;
+    --card-bg: rgb(254, 241, 228);
 
-    /* géométrie du carrousel */
+    --text-primary: #374d70;
+    --text-secondary: #d8cac2;
+
+    /* halos/glow depuis style.module.css */
+    --glow-primary: 0 0 10px rgb(232, 228, 222), 0 0 20px rgb(192, 150, 72);
+    --glow-secondary: 0 0 10px rgba(0, 229, 255, 0.7), 0 0 20px rgba(0, 229, 255, 0.5);
+    --glow-accent: 0 0 10px rgb(192, 150, 72), 0 0 20px rgb(192, 149, 71);
+
+    /* GÉOMÉTRIE & timing (conservés de style.css) */
     --card-width: 260px;      /* fallback si pas de JS */
     --card-height: 351px;
     --carousel-radius: clamp(180px, 38vw, 420px);
@@ -20,6 +27,10 @@
     --card-title-lines: 2;
     --card-preview-lines: 2;
     --card-back-lines: 4;
+
+    --pill-bottom: 26px;
+    --pill-height: 56px;
+    --title-gap: 24px;
 }
 
 html,body{
@@ -27,10 +38,9 @@ html,body{
     font-family: "Chakra Petch", system-ui, Avenir, Helvetica, Arial, sans-serif;
     background: var(--background);
     color: var(--text-primary);
-    /* overflow:hidden;  <-- ENLEVER ceci */
-    overflow-x: hidden;       /* garde le X caché si besoin */
-    overflow-y: auto;         /* laisse scroller */
-    display: block;           /* pas de grid sur <body> */
+    overflow-x: hidden;
+    overflow-y: auto;
+    display: block;
 }
 
 main {
@@ -38,41 +48,49 @@ main {
     flex-direction: column;
     min-height: 100vh;
     box-sizing: border-box;
-    padding-top: 125px;   /* logo 100x100 -> laisse de la marge */
-    padding-bottom: 80px;/* espace pour le footer fixé */
+    padding-top: 125px;
+    padding-bottom: 80px;
 }
+
 h1 {
     margin: 0 auto 12px;
     width: 100%;
-    max-width: 920px;  /* comme le pill */
+    max-width: 920px;
     text-align: center;
     font-size: 1.6rem;
     line-height: 1.2;
-    color: #374d70;    /* ton bleu */
+    color: var(--text-primary);
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 0 0 15px rgb(192, 149, 71);
 }
 
+/* Liens (léger contraste sur fond clair) */
 a{ color:#646cff; text-decoration:none; font-weight:500; }
 a:hover{ color:#535bf2; }
 
-/* mode clair système : ajuste juste le texte des liens si tu veux
-@media (prefers-color-scheme: light){
-  a:hover{ color:#747bff; }
-}
-*/
-
 /* ====== Header/logo ====================================================== */
 .header-logo {
-    position: fixed;   /* au lieu de absolute */
+    position: fixed;
     top: 16px;
     left: 16px;
     width: 100px;
     height: 100px;
-    z-index: 1000;     /* au-dessus du carrousel */
-    pointer-events: none; /* si c'est purement déco */
+    z-index: 1000;
+    pointer-events: none;
 }
+
 /* ====== Barre de recherche =============================================== */
 .search-container{
-    position:relative; width:100%; max-width:920px; margin:0 auto; display:flex; align-items:center;
+    display: flex;
+    align-items: center;
+    gap: 1px;
+    width: 100%;
+    max-width: 920px;
+    margin: 0 auto;
+    box-sizing: border-box;
 }
 
 .search-pill{
@@ -109,14 +127,18 @@ a:hover{ color:#535bf2; }
 
 /* Résultats */
 .results-card{
-    background:#374d70; color:#fff; padding:12px 16px; border-radius:12px;
+    background: var(--secondary);
+    color: var(--text-primary);
+    padding:12px 16px; border-radius:12px;
     width:100%; max-width:920px; margin:16px auto 0; box-shadow:0 6px 18px rgba(37,99,235,.12);
 }
 .results-text{ margin:0; font-weight:600; font-size:.95rem; line-height:1.25; }
 
-/* ====== Fond cosmique (optionnel) ======================================== */
-.cosmos-background{ position:fixed; inset:0; z-index:-1;
-    background:radial-gradient(ellipse at bottom,#1b2735 0%,#090a0f 100%); overflow:hidden;
+/* ====== Fond cosmique (harmonisé) ======================================== */
+.cosmos-background{
+    position:fixed; inset:0; z-index:-1;
+    background:radial-gradient(ellipse at bottom,#889eb8 0%, #7d7a91 100%);
+    overflow:hidden;
 }
 .stars-container{
     position:absolute; inset:0;
@@ -128,12 +150,15 @@ a:hover{ color:#535bf2; }
     background-size:200px 200px,300px 300px,400px 400px,600px 600px;
     animation:twinkle 10s linear infinite;
 }
-@keyframes twinkle{ to{ background-position:200px 200px,300px 300px,400px 400px,600px 600px; } }
+@keyframes twinkle{
+    0%{ background-position:0 0,0 0,0 0,0 0; }
+    100%{ background-position:200px 200px,300px 300px,400px 400px,600px 600px; }
+}
 
 /* ====== Carrousel 3D ===================================================== */
 .carousel-container{
-    position:relative; width:100%; height: clamp(320px, 54vh, 560px);  /* laisse de la place à la recherche/footer */
-     min-height:260px; margin:8px auto 0; padding:0 16px; box-sizing:border-box;
+    position:relative; width:100%; height: clamp(320px, 54vh, 560px);
+    min-height:260px; margin:8px auto 0; padding:0 16px; box-sizing:border-box;
     perspective:1000px; transform-style:preserve-3d;
     display:flex; justify-content:center; align-items:center; touch-action:none; overflow:hidden;
 }
@@ -143,7 +168,7 @@ a:hover{ color:#535bf2; }
     display:flex; align-items:center; justify-content:center;
 }
 
-/* ====== Cartes mémoire ==================================================== */
+/* ====== Cartes mémoire (opacités & couleurs importées) =================== */
 .memory-card{
     position:absolute; width:var(--card-width); height:var(--card-height);
     left:50%; top:50%; margin-left:calc(var(--card-width)/-2); margin-top:calc(var(--card-height)/-2);
@@ -161,31 +186,40 @@ a:hover{ color:#535bf2; }
     position:absolute; inset:0; border-radius:15px; overflow:hidden; backface-visibility:hidden;
     box-shadow:0 0 20px rgba(0,0,0,.5);
 }
+
+/* Dégradés & bordures inspirés du module */
 .card-front{
-    background:linear-gradient(135deg,rgba(30,30,60,.8),rgba(20,20,40,.9));
-    border:1px solid rgba(157,0,255,.3);
+    background: linear-gradient(135deg, rgba(20,20,40,0.90), rgb(56,78,112));
+    border:1px solid rgb(55,77,112);
 }
 .card-back{
-    background:linear-gradient(135deg,rgba(20,20,40,.9),rgba(30,30,60,.8));
-    border:1px solid rgba(0,229,255,.3); transform:rotateY(180deg);
+    background: linear-gradient(135deg, rgba(20,20,40,0.90), rgb(56,78,112));
+    border:1px solid rgb(232,228,222);
+    transform:rotateY(180deg);
 }
 
 .card-content{ padding:20px; height:100%; display:flex; flex-direction:column; position:relative; color:var(--text-primary); }
-.memory-date{ font-size:.8rem; color:var(--accent); margin-bottom:10px; text-shadow:0 0 6px rgba(255,0,229,.6); }
-.memory-card h3{  font-size: 1.2rem;   /* ↓ diminue pour compacter */
-    line-height: 1.3;
+.memory-date{
+    font-size:.8rem; color: var(--accent); margin-bottom:10px;
+    text-shadow: 0 0 5px rgb(193,150,72);
+}
+.memory-card h3{
+    font-size: 1.2rem; line-height: 1.3;
     -webkit-line-clamp: var(--card-title-lines);
     white-space: normal;
-    max-height: calc(1.2em * var(--card-title-lines));}
+    max-height: calc(1.2em * var(--card-title-lines));
+    text-shadow: 0 0 10px rgba(255,255,255,0.5);
+}
+
 .memory-image{
     width:100%; height:150px; margin-bottom:15px; display:flex; justify-content:center; align-items:center;
-    position:relative; overflow:hidden; border-radius:8px; background:rgba(0,0,0,.25);
+    position:relative; overflow:hidden; border-radius:8px; background:rgba(0,0,0,.30);
 }
 .memory-image img{ max-width:100%; max-height:100%; object-fit:cover; z-index:2; }
 
 .glitch-effect{
     position:absolute; inset:0; z-index:1;
-    background:linear-gradient(45deg,transparent 65%, rgba(157,0,255,.3) 70%, transparent 75%);
+    background:linear-gradient(45deg, transparent 65%, rgb(104, 80, 37) 70%, transparent 75%);
     background-size:200% 200%; animation:glitch 3s linear infinite;
 }
 @keyframes glitch{
@@ -194,48 +228,43 @@ a:hover{ color:#535bf2; }
     100%{background-position:0 0;}
 }
 
-.memory-preview, .card-back .card-content p{
+.memory-preview,
+.card-back .card-content p{
     font-size: 0.55rem;
     line-height: 1.4;
     -webkit-line-clamp: var(--card-preview-lines);
     white-space: normal;
     max-height: calc(1.2em * var(--card-title-lines));
+    color: var(--text-secondary);
 }
-.memory-coordinates{ font-size:.6rem; color:var(--secondary); display:flex; flex-direction:column; gap:5px; }
-.time-stamp{ color:var(--accent); }
+
+.memory-coordinates{ font-size:.6rem; color: var(--secondary); display:flex; flex-direction:column; gap:5px; }
+.time-stamp{ color: var(--accent); }
+
 .card-glow{
     position:absolute; inset:0; border-radius:15px; pointer-events:none;
-    background:radial-gradient(circle at 50% 50%, rgba(157,0,255,.1), transparent 70%);
+    background: radial-gradient(circle at 50% 50%, rgb(55,77,111), transparent 70%);
     opacity:0; transition:opacity .3s ease;
 }
 .memory-card:hover .card-glow{ opacity:1; }
 
-.memory-card h3.clamp,
-.memory-preview.clamp,
-.card-back .card-content p.clamp {
-    /* appliquer la technique webkit */
-    -webkit-box-orient: vertical;
-    display: -webkit-box;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-/* ====== Contrôles ======================================================== */
+/* ====== Contrôles (harmonisés à la palette) ============================== */
 .carousel-controls{
     position:absolute; bottom:-10px; left:50%; transform:translateX(-50%);
     display:flex; gap:10px; z-index:10; padding-bottom: 10px; margin-top: 8px;
 }
 .control-btn{
     width:40px; height:40px; border-radius:50%;
-    background:rgba(20,20,40,.7); border:1px solid var(--primary); color:var(--text-primary);
+    background:rgba(20,20,40,.7);
+    border:1px solid var(--primary);
+    color:var(--text-primary);
     display:grid; place-items:center; cursor:pointer;
     transition:transform .2s ease, background .2s ease;
-    box-shadow:0 0 10px rgba(157,0,255,.3);
+    box-shadow: var(--glow-primary);
 }
 .control-btn:hover{ background:rgba(30,30,60,.9); transform:scale(1.1); }
 
 /* ====== Variantes & responsive ========================================== */
-/* version compacte : applique la classe .carousel--compact à un parent du carrousel */
 .carousel--compact{
     --card-width:140px; --card-height:190px; --carousel-radius:180px; --transition-speed:.35s;
 }
@@ -255,7 +284,11 @@ a:hover{ color:#535bf2; }
 /* points de rupture */
 @media (max-width:768px){
     :root{ --card-width:250px; --card-height:350px; --carousel-radius:300px; }
-    .carousel-container{ height:400px; }
+    .carousel-container{
+        min-height: calc(var(--card-height) + 36px);
+        max-height: calc(100vh - (var(--pill-height) + var(--pill-bottom) + 72px));
+        perspective: 1000px;
+    }
     .memory-card h3{ font-size:1.2rem; }
     .memory-image{ height:120px; }
 }
@@ -267,13 +300,70 @@ a:hover{ color:#535bf2; }
     }
     .carousel-container{ height: clamp(300px, 58vh, 520px); }
 }
-@media (max-width:400px){
-    .carousel-container{ height:calc(100vh - 200px); }
-    :root{ --card-title-lines: 1;
-        --card-preview-lines: 1;
-        --card-back-lines: 2;}
+
+/* ====== Titre & pill fixés (section recherche) =========================== */
+main.home-root { min-height: 100vh; display: flex; flex-direction: column; }
+.carousel-area {
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 12px 140px;
+}
+.search-section { position: relative; }
+.search-title {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: calc(var(--pill-bottom) + var(--pill-height) + var(--title-gap));
+    width: auto; max-width: 920px; padding: 0 12px;
+    text-align: center; margin: 0; z-index: 60;
+    color: var(--text-primary); pointer-events: none;
+    font-size: 1.6rem; line-height: 1.2;
+}
+.search-fixed {
+    position: fixed; left: 0; right: 0; bottom: 26px;
+    display: flex; justify-content: center; z-index: 70;
+}
+.search-fixed form,
+.search-fixed .search-container {
+    pointer-events: auto; width: 100%; max-width: 720px; padding: 0 12px; box-sizing: border-box;
+}
+.carousel-container { max-height: calc(100vh - 180px); }
+
+@media (max-width: 480px) {
+    .carousel-area { padding-bottom: 120px; }
+    .search-title { bottom: calc(12px + 48px + 6px); }
+    .search-fixed { bottom: 12px; }
+    .search-fixed .search-container { gap: 8px; padding: 0 8px; }
+    .search-fixed .search-btn { width: 48px; height: 48px; margin-left: 6px; }
+    .search-fixed .search-pill { height: 52px; }
 }
 
+.search-fixed .search-container {
+    display: flex; align-items: center; gap: 12px;
+    width: 100%; max-width: 720px; margin: 0 auto; box-sizing: border-box;
+}
+.search-fixed .search-pill {
+    flex: 1 1 auto; width: auto; margin: 0; height: 56px; padding: .55rem 1rem;
+    border-radius: 9999px; display: flex; align-items: center; gap: .75rem;
+    background: #e6e5dd; border: 1px solid rgba(92,99,91,.35);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.7), 0 6px 18px rgba(16,24,40,.06);
+}
+.search-fixed .search-btn {
+    position: static; flex: 0 0 auto; width: 56px; height: 56px; border-radius: 9999px;
+    margin-left: 8px; display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer; background: #fff7ec; border: 1px solid rgba(71,76,70,.44);
+    box-shadow: 0 6px 18px rgba(16,24,40,.06); transform: none;
+}
+.search-fixed .search-btn:hover,
+.search-fixed .search-btn:focus-visible {
+    background-color: rgba(64,77,110,.75);
+    box-shadow: 0 10px 24px rgba(16,24,40,.12);
+    transform: translateY(-2px); /* optionnel : petit soulèvement visuel */
+}
+
+/* Utilitaires clamp multi-lignes */
 .clamp {
     display: -webkit-box;
     -webkit-box-orient: vertical;
