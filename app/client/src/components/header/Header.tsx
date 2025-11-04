@@ -5,7 +5,7 @@ export function Header() {
 
     return (
         <div className="inline-flex flex-col">
-            <header>
+            <header className="site-header">
                 <img src={logo} alt="Logo AI Chef" className="header-logo"/>
             </header>
         </div>

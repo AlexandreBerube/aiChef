@@ -7,9 +7,9 @@ function App() {
 
 
     return (
-        <div className="">
+        <div className="min-h-screen flex flex-col">
             <Header/>
-            <div className="h-full">
+            <div>
                 <Home/>
             </div>
             <Footer/>
