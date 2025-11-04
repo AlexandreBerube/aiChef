@@ -21,6 +21,25 @@
     --pill-bottom: 26px;
     --pill-height: 56px;
     --title-gap: 24px;
+
+    --header-height: 100px;   /* ajuste selon ton logo */
+    --footer-height: 56px;   /* ajuste selon ton footer */
+    --bottom-block-gap: calc(var(--footer-height) + var(--pill-bottom) + var(--pill-height) + var(--title-gap));
+}
+
+/* Header fixe pleine largeur */
+.site-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 88px; /* ajuste selon ton logo */
+    background-color: transparent; /* ou une couleur de fond */
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* logo à gauche */
+    padding-left: 16px; /* espace depuis le bord */
+    z-index: 1000;
 }
 
 * {
@@ -65,13 +84,10 @@ h6 {
 
 /* ====== Header/logo ====================================================== */
 .header-logo {
-    position: fixed;
-    top: 16px;
-    left: 16px;
-    width: 100px;
-    height: 100px;
-    z-index: 1000;
-    pointer-events: none;
+    position: static;        /* au lieu de fixed */
+    height: calc(var(--header-height) );
+    width: auto;
+    pointer-events: auto;
 }
 
 /* ====== Titre & pill fixés (section recherche) =========================== */
@@ -79,6 +95,10 @@ main.home-root {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    padding-top: var(--header-height);
+    padding-bottom: calc(
+            var(--footer-height) + var(--pill-height) + var(--title-gap) + var(--pill-bottom)
+    );
 }
 
 /* ====== Barre de recherche =============================================== */
@@ -150,24 +170,18 @@ main.home-root {
     position: fixed;
     left: 50%;
     transform: translateX(-50%);
-    bottom: calc(var(--pill-bottom) + var(--pill-height) + var(--title-gap));
-    width: auto;
-    max-width: 920px;
-    padding: 0 12px;
+    width: 75%; /* même largeur que .search-pill (75%) */
     text-align: center;
-    margin: 0;
-    z-index: 60;
-    color: var(--text-primary);
-    pointer-events: none;
-    font-size: 1.6rem;
-    line-height: 1.2;
+    color: #384d70; /* bleu foncé */
+    font-size: 1.5rem;
+    font-weight: 600;
+    bottom: var(--bottom-block-gap);
 }
 
 .search-fixed {
     position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 26px;
+    left: 0; right: 0;
+    bottom: calc(var(--footer-height) + var(--pill-bottom));
     display: flex;
     justify-content: center;
     z-index: 70;
@@ -528,6 +542,17 @@ main.home-root {
     z-index: 10;
 }
 
+.carousel-area {
+    position: relative;
+    flex: 1 1 auto;
+    min-height: calc(100vh - var(--header-height) - var(--bottom-block-gap));
+    display: flex;
+    align-items: center;      /* centre verticalement le carrousel */
+    justify-content: center;  /* centre horizontalement */
+    padding: 16px 0;          /* petite marge de sécurité */
+    overflow: hidden;         /* empêche tout dépassement visuel */
+}
+
 .control-btn {
     background: rgba(20, 20, 40, 0.7);
     border: 1px solid var(--primary);
@@ -550,11 +575,25 @@ main.home-root {
 
 /* Footer */
 .site-footer {
+    position: fixed;         /* au lieu de relative */
+    bottom: 0;
+    left: 0; right: 0;
+    height: var(--footer-height);
     display: flex;
-    position: relative;
-    z-index: 10;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;             /* inférieur à la barre de recherche (z=70) */
+    background: transparent; /* mets une couleur si souhaité */
 }
 
+.footer-text{
+    color: #a3a09d;       /* Bleu foncé, par exemple */
+    font-size: 0.9rem;
+    text-align: center;
+    width: 100%;
+    margin: 0;
+    padding: 8px 0;
+}
 .instructions {
     font-size: 0.8rem;
     color: var(--text-secondary);
@@ -585,7 +624,9 @@ main.home-root {
     }
 
     .carousel-container {
-        height: 400px;
+        height: 100%;      /* remplace l’ancienne hauteur fixe */
+        max-height: 100%;
+        overflow: hidden;  /* encore une sécurité */
     }
 
     .memory-card h3 {
@@ -594,6 +635,11 @@ main.home-root {
 
     .memory-image {
         height: 120px;
+    }
+
+    .search-title {
+        width: 90%;
+        font-size: 1.2rem;
     }
 }
 
@@ -609,6 +655,8 @@ main.home-root {
     }
 
     .carousel-container {
-        height: 350px;
+        height: 100%;      /* remplace l’ancienne hauteur fixe */
+        max-height: 100%;
+        overflow: hidden;  /* encore une sécurité */
     }
 }
