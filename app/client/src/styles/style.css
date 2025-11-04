@@ -394,6 +394,7 @@ main.home-root {
     display: flex;
     flex-direction: column;
     position: relative;
+    overflow: hidden;
 }
 
 .memory-date {
@@ -468,11 +469,15 @@ main.home-root {
 }
 
 .memory-preview {
-    font-size: 0.9rem;
+    font-size: clamp(0.65rem, 1.4vw, 0.95rem);
+    line-height: 1.25;
     color: var(--text-secondary);
-    margin-bottom: 15px;
+    margin-bottom: 12px;
     flex-grow: 1;
+    white-space: pre-wrap;
+    overflow-y: auto;
 }
+
 
 .card-back .card-content {
     font-size: 0.9rem;
@@ -480,6 +485,13 @@ main.home-root {
     margin-bottom: 20px;
     line-height: 1.5;
     flex-grow: 1;
+}
+
+.card-back p {
+    font-size: clamp(0.65rem, 1.3vw, 0.9rem);
+    line-height: 1.3;
+    white-space: pre-wrap;
+    overflow-y: auto;
 }
 
 .memory-coordinates {
@@ -586,10 +598,6 @@ main.home-root {
 
     .carousel-container {
         height: 400px;
-    }
-
-    .memory-card h3 {
-        font-size: 1.2rem;
     }
 
     .memory-image {

@@ -236,16 +236,8 @@ export function Carousel({
                                         <div className="card-inner">
                                             <div className="card-front">
                                                 <div className="card-content">
-                                                    {m.tag && <div className="memory-date">{m.tag}</div>}
                                                     <h3>{m.title}</h3>
-                                                    <div className="memory-image">
-                                                        {m.imageUrl ? (
-                                                            <img src={m.imageUrl} alt={m.title} style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "cover" }} />
-                                                        ) : null}
-                                                        <div className="glitch-effect"></div>
-                                                    </div>
                                                     {m.preview && <p className="memory-preview">{m.preview}</p>}
-                                                    <div className="card-glow"></div>
                                                 </div>
                                             </div>
                                             <div className="card-back">

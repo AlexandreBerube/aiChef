@@ -1,7 +1,7 @@
 import {useState} from "react";
 import "@/styles/style.css";
 import fouet from "@/assets/fouet.svg";
-import { Carousel, type CarouselItem } from "@/components/carousel/Carousel.tsx"
+import {Carousel, type CarouselItem} from "@/components/carousel/Carousel.tsx"
 
 export function Home() {
     const [query, setQuery] = useState("");
@@ -11,22 +11,40 @@ export function Home() {
 
     async function handleSearch(e: React.FormEvent) {
         e.preventDefault();
-        setShowCarousel(true);
+        setShowCarousel(false);
         setLoading(true);
+
         try {
-            const fakeApi = await new Promise<CarouselItem[]>(resolve =>
-                setTimeout(() => resolve([
-                    { id: "r1", title: "Mousse au chocolat", tag: "DESSERT", preview: "Œufs, chocolat, beurre…", description: "Une mousse aérienne et riche en cacao.", location: "Difficulté: Facile", time: "Prépa: 15 min", imageUrl: "/images/mousse.jpg" },
-                    { id: "r2", title: "Omelette beurre-noisette", tag: "RAPIDE", preview: "Œufs, beurre, sel…", description: "Omelette à texture baveuse et parfum noisette.", location: "Difficulté: Très facile", time: "Prépa: 7 min" },
-                    { id: "r3", title: "Cookies chocolat", tag: "GOÛTER", preview: "Farine, beurre, chocolat…", description: "Extérieur crousti, intérieur moelleux.", location: "Difficulté: Facile", time: "Prépa: 20 min" },
-                ]), 500)
-            );
-            const filtered = fakeApi.filter(x =>
-                (x.title + " " + (x.preview ?? "")).toLowerCase().includes(query.toLowerCase())
-            );
-            setResults(filtered);
+            const response = await fetch("/api/generate", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({ingredients: query.split(",")})
+            });
+
+            const llmData = await response.json();
+
+            // ✅ Adaptation du JSON à CarouselItem[]
+            const mapped = llmData.recipes.map((recipe: any, index: number) => ({
+                id: index,
+                title: recipe.title,
+                tag: "RECETTE",
+                preview: recipe.ingredients
+                    .map((i: any) => `• ${i.quantity} ${i.name}`)
+                    .join("\n"),
+                description: recipe.instructions
+                    .map((step: string, i: number) => `• ${step}`)
+                    .join("\n"),
+                location: undefined,
+                time: undefined,
+                imageUrl: undefined,
+            }));
+
+            setResults(mapped);
+        } catch (err) {
+            console.error("Erreur API:", err);
         } finally {
             setLoading(false);
+            setShowCarousel(true);
         }
     }
 
@@ -43,7 +61,14 @@ export function Home() {
         <main className="home-root">
             {/* zone supérieure : carrousel (apparait après clic) */}
             <div className="carousel-area">
-                {showCarousel && <Carousel items={results} theme={theme} />}
+                {loading && (
+                    <div className="loader-container">
+                        <div className="loader"></div>
+                        <p className="loader-text">Recherche de recettes...</p>
+                    </div>
+                )}
+
+                {!loading && showCarousel && <Carousel items={results} theme={theme}/>}
             </div>
 
             {/* section principale — contient titre (fixé juste au-dessus du pill) */}
