@@ -2,6 +2,7 @@ import {useState} from "react";
 import "@/styles/style.css";
 import fouet from "@/assets/fouet.svg";
 import {Carousel, type CarouselItem} from "@/components/carousel/Carousel.tsx"
+import swedishChef from "@/assets/swedishChef.gif";
 
 export function Home() {
     const [query, setQuery] = useState("");
@@ -15,7 +16,8 @@ export function Home() {
         setLoading(true);
 
         try {
-            const response = await fetch("/api/generate", {
+            const response = await fetch("http://192.168.0.25:3000/api/generate", {
+
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
                 body: JSON.stringify({ingredients: query.split(",")})
@@ -64,52 +66,49 @@ export function Home() {
                 {loading && (
                     <div className="loader-container">
                         <div className="loader"></div>
-                        <p className="loader-text text-black">Recherche de recettes...</p>
+                        <p className="loader-text text-black"><span><img src={swedishChef}/></span></p>
                     </div>
                 )}
 
                 {!loading && showCarousel && <Carousel items={results} theme={theme}/>}
             </div>
 
-            {/* section principale — contient titre (fixé juste au-dessus du pill) */}
-            <section className="search-section">
-                {(
-                    <h1 className="search-title">Quels ingrédients avez-vous sous la main aujourd’hui ?</h1>
-                )}
+            <div className="flex flex-col items-center mt-8 mb-16 px-4">
+                <h1 className="search-title">Quels ingrédients avez-vous sous la main aujourd’hui ?</h1>
+            </div>
 
-                {/* pill fixé en bas de la page */}
-                <div className="search-fixed">
-                    <form onSubmit={handleSearch}>
-                        <div className="search-container">
-                            <label className="search-pill" htmlFor="search-input">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                                     fill="none" stroke="currentColor" strokeWidth={1.5}
-                                     aria-hidden="true" className="">
-                                    <path strokeLinecap="round" strokeLinejoin="round"
-                                          d="M21 21l-4.35-4.35m1.35-5.65A7.5 7.5 0 1110.5 3a7.5 7.5 0 017.5 7.5z"/>
-                                </svg>
-                                <input
-                                    id="search-input"
-                                    value={query}
-                                    onChange={(e) => setQuery(e.target.value)}
-                                    placeholder="oeuf, beurre, chocolat…"
-                                    className="search-input"
-                                />
-                            </label>
+            {/* pill fixé en bas de la page */}
+            <div className="search-fixed">
+                <form onSubmit={handleSearch}>
+                    <div className="search-container">
+                        <label className="search-pill" htmlFor="search-input">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                 fill="none" stroke="currentColor" strokeWidth={1.5}
+                                 aria-hidden="true" className="">
+                                <path strokeLinecap="round" strokeLinejoin="round"
+                                      d="M21 21l-4.35-4.35m1.35-5.65A7.5 7.5 0 1110.5 3a7.5 7.5 0 017.5 7.5z"/>
+                            </svg>
+                            <input
+                                id="search-input"
+                                value={query}
+                                onChange={(e) => setQuery(e.target.value)}
+                                placeholder="oeuf, beurre, chocolat…"
+                                className="search-input"
+                            />
+                        </label>
 
-                            <button
-                                type="submit"
-                                className="search-btn"
-                                aria-label="Rechercher"
-                                disabled={loading}
-                                onClick={() => setShowCarousel(true)}
-                            >
-                                <img src={fouet} alt="fouet" className="search-btn_img"/>
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </section>
+                        <button
+                            type="submit"
+                            className="search-btn"
+                            aria-label="Rechercher"
+                            disabled={loading}
+                            onClick={() => setShowCarousel(true)}
+                        >
+                            <img src={fouet} alt="fouet" className="search-btn_img"/>
+                        </button>
+                    </div>
+                </form>
+            </div>
         </main>
     );
 }

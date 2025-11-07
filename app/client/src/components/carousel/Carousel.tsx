@@ -1,7 +1,6 @@
 // app/client/src/components/home/Carousel3D.tsx
 import {useEffect, useMemo, useRef, useState} from "react";
 
-
 // Type générique pour tes résultats (adapte librement)
 export type CarouselItem = {
     id: string | number;
@@ -24,9 +23,9 @@ type Theme = Partial<{
 }>;
 
 export function Carousel({
-                               items,
-                               theme,
-                           }: {
+                             items,
+                             theme,
+                         }: {
     items: CarouselItem[];
     theme?: Theme;
 }) {
@@ -44,17 +43,19 @@ export function Carousel({
     const anglePerCard = useMemo(() => 360 / total, [total]);
 
     useEffect(() => {
-        const el = containerRef.current;
+        // on observe le parent, pas le container interne
+        const el = containerRef.current?.parentElement;
+
         if (!el) return;
 
         const ro = new ResizeObserver(([entry]) => {
-            const { width: cw, height: ch } = entry.contentRect;
+            const {width: cw, height: ch} = entry.contentRect;
 
             // 1) contraintes/marges pour être sûr que ça ne coupe pas
             const verticalPadding = 24;           // marge de sécurité haut/bas (px)
             const horizontalPadding = 24;         // marge latérale
             const maxCardHeight = Math.max(160, ch - verticalPadding * 2);
-            const maxCardWidth  = Math.max(140, cw - horizontalPadding * 2);
+            const maxCardWidth = Math.max(140, cw - horizontalPadding * 2);
 
             // 2) ratio de la carte ~ 1.35 (comme ton CSS)
             const ratio = 1.35;
@@ -62,8 +63,9 @@ export function Carousel({
             // 3) on prend la plus petite dimension permissible en respectant le ratio
             //    - si on limite par la hauteur -> width = height/ratio
             //    - si on limite par la largeur -> height = width*ratio
-            let cardH = maxCardHeight * 0.92; // un peu de marge visuelle
+            let cardH = Math.max(140, maxCardHeight * 0.92); // 140px = min visuel acceptable
             let cardW = cardH / ratio;
+
             if (cardW > maxCardWidth) {
                 cardW = maxCardWidth * 0.92;
                 cardH = cardW * ratio;
@@ -75,7 +77,7 @@ export function Carousel({
 
             // 5) rayon : proportionnel à la largeur dispo (évite sortie du container)
             //    règle simple: ~45% de la largeur, borné
-            const r = Math.min(Math.max(cw * 0.45, cardW * 1.2), cw * 0.5);
+            const r = Math.min(Math.max(cw * 0.60, cardW * 1.5), cw * 0.6);
             setRadius(Math.round(r));
         });
 
@@ -156,18 +158,18 @@ export function Carousel({
         };
 
         el.addEventListener("mousedown", dragStart);
-        el.addEventListener("touchstart", dragStart, { passive: true });
-        document.addEventListener("mousemove", dragMove, { passive: false });
-        document.addEventListener("touchmove", dragMove, { passive: false });
+        el.addEventListener("touchstart", dragStart, {passive: true});
+        document.addEventListener("mousemove", dragMove, {passive: false});
+        document.addEventListener("touchmove", dragMove, {passive: false});
         document.addEventListener("mouseup", dragEnd);
         document.addEventListener("touchend", dragEnd);
 
         return () => {
             el.removeEventListener("mousedown", dragStart);
             el.removeEventListener("touchstart", dragStart);
-            document.removeEventListener("mousemove", dragMove );
-            document.removeEventListener("touchmove", dragMove );
-            document.removeEventListener("mouseup", dragEnd );
+            document.removeEventListener("mousemove", dragMove);
+            document.removeEventListener("touchmove", dragMove);
+            document.removeEventListener("mouseup", dragEnd);
             document.removeEventListener("touchend", dragEnd);
         };
     }, [anglePerCard, theta]);
@@ -202,21 +204,22 @@ export function Carousel({
     return (
         <div className="container-fluid h-100 d-flex flex-column" style={styleVars}>
             <div className="flex-grow-1 d-flex align-items-center justify-content-center position-relative">
-                <div className="carousel-container" ref={containerRef} >
+                <div className="carousel-container" ref={containerRef}>
                     <div
                         className="carousel"
                         ref={carouselRef}
-                        style={{ transform: `rotateY(${theta}deg)` }}
+                        style={{transform: `rotateY(${theta}deg)`}}
                     >
                         {items.length === 0 ? (
-                            <div className="memory-card" style={{ transform: `rotateY(0deg) translateZ(${radius}px)` }}>
+                            <div className="memory-card" style={{transform: `rotateY(0deg) translateZ(${radius}px)`}}>
                                 <div className="card-inner">
                                     <div className="card-front">
                                         <div className="card-content">
                                             <div className="memory-date">AUCUN RÉSULTAT</div>
                                             <h3>Commence une recherche</h3>
-                                            <div className="memory-image" />
-                                            <p className="memory-preview">Tape quelques ingrédients pour voir des cartes apparaître.</p>
+                                            <div className="memory-image"/>
+                                            <p className="memory-preview">Tape quelques ingrédients pour voir des cartes
+                                                apparaître.</p>
                                             <div className="card-glow"></div>
                                         </div>
                                     </div>
@@ -232,19 +235,20 @@ export function Carousel({
                                         className={`memory-card${isFlipped ? " flipped" : ""}`}
                                         data-index={idx}
                                         onClick={() => toggleFlip(idx, m.id)}
-                                        style={{ transform: `rotateY(${cardAngle}deg) translateZ(${radius}px)` }}
+                                        style={{transform: `rotateY(${cardAngle}deg) translateZ(${radius}px)`}}
                                     >
                                         <div className="card-inner">
                                             <div className="card-front">
                                                 <div className="card-content">
-                                                    <p className="font-bold">{m.title}</p>
+                                                    <p>{m.title}</p>
                                                     {m.preview && <p className="memory-preview">{m.preview}</p>}
                                                 </div>
                                             </div>
                                             <div className="card-back">
                                                 <div className="card-content">
                                                     <h2>{m.title}</h2>
-                                                    {m.description && <p className="description-card-back">{m.description}</p>}
+                                                    {m.description &&
+                                                        <p className="description-card-back">{m.description}</p>}
                                                     {(m.location || m.time) && (
                                                         <div className="memory-coordinates">
                                                             {m.location && <span>{m.location}</span>}
