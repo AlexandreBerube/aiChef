@@ -16,7 +16,8 @@ export function Home() {
         setLoading(true);
 
         try {
-            const response = await fetch("http://192.168.0.25:3000/api/generate", {
+            const response = await fetch("http://10.201.19.206:3000/api/generate", {
+
 
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
