@@ -36,7 +36,7 @@
     top: 0;
     left: 0;
     width: 100%;
-    height: 88px; /* ajuste selon ton logo */
+    height: 100px; /* ajuste selon ton logo */
     background-color: transparent; /* ou une couleur de fond */
     display: flex;
     align-items: center;
