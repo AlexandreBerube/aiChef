@@ -16,13 +16,12 @@ export function Home() {
         setLoading(true);
 
         try {
-            const response = await fetch("http://10.201.19.206:3000/api/generate", {
-
-
-                method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({ingredients: query.split(",")})
-            });
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/generate`
+                , {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify({ingredients: query.split(",")})
+                });
 
             const llmData = await response.json();
 
