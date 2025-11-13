@@ -57,7 +57,7 @@ export function Home() {
                         .join("\n"),
                     description: recipe.instructions
                         .map((step: string) => `• ${step}`)
-                        .join("\n"),
+                        .join("\n\n"),
                 })
             ) ?? [];
 
