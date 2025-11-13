@@ -1,0 +1,165 @@
+@import "tailwindcss";
+
+@tailwind utilities;
+/* ✅ Conteneur en 2 colonnes (déjà présent dans ton fichier) */
+.recipe-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 2rem;
+    width: 100%;
+    padding: 1rem;
+    justify-items: center;
+}
+
+/* ✅ structure flip */
+.flip-card {
+    width: clamp(300px, 90%, 550px);
+    height: clamp(320px, 50vh, 480px);
+    perspective: 1200px;
+}
+
+.flip-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.7s ease;
+    transform-style: preserve-3d;
+    cursor: pointer;
+}
+
+.flip-card:hover .flip-inner {
+    transform: rotateY(180deg);
+}
+
+.flip-front, .flip-back {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    border-radius: 16px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: linear-gradient(135deg, rgba(20, 20, 40, 0.90), rgb(56, 78, 112));
+    color: white;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.flip-back {
+    transform: rotateY(180deg);
+}
+
+.ingredients {
+    flex-grow: 1;
+    white-space: pre-wrap;
+    overflow: hidden;
+
+    font-size: clamp(0.65rem, 1.3vw, 1rem);
+    line-height: 1.2;
+
+    /* 🔥 Squeeze progressif quand beaucoup d’ingrédients */
+    display: -webkit-box;
+    -webkit-line-clamp: 20;   /* limite visuelle max */
+    -webkit-box-orient: vertical;
+}
+
+
+.instructions {
+    flex-grow: 1;
+    white-space: pre-wrap;
+    overflow-y: auto;
+    font-size: 0.9rem;
+}
+
+.recipe-section {
+    margin-bottom: 3rem;
+}
+
+.recipe-section-title {
+    font-size: 2rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 1rem;
+    color: rgb(56, 78, 112);
+}
+
+.carousel-area {
+    height: auto; /* laisse respirer */
+    min-height: 400px; /* sécurité */
+    display: block; /* plus de centrage */
+    padding: 2rem 0;
+    overflow: visible; /* laisse la grille grandir */
+}
+
+h3 {
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+    text-decoration: underline;
+    text-decoration-style: solid;
+    text-decoration-color: #fef1e4;
+    color: #fef1e4;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 4px;
+}
+/* Scrollbar minimaliste, subtile */
+.card-scrollable::-webkit-scrollbar {
+    width: 6px;
+}
+
+.card-scrollable::-webkit-scrollbar-track {
+    background: transparent;      /* invisible */
+}
+
+.card-scrollable::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.25); /* subtil */
+    border-radius: 4px;
+}
+
+.card-scrollable:hover::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.45); /* visible au hover */
+}
+
+/* Pour Firefox */
+.card-scrollable {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.25) transparent;
+}
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(3px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+    cursor: pointer;
+}
+
+.modal-card {
+    background: linear-gradient(135deg, rgba(20,20,40,0.92), rgb(56,78,112));
+    color: white;
+    border-radius: 20px;
+    padding: 2rem;
+    width: clamp(400px, 70%, 900px);
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+    cursor: default; /* empêche le click sur la card de fermer */
+}
+
+.modal-text {
+    white-space: pre-wrap;
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+    overflow-y: auto;
+}
+
+.modal-card::-webkit-scrollbar {
+    width: 8px;
+}
+.modal-card::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.3);
+    border-radius: 6px;
+}

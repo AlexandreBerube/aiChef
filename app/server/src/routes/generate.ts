@@ -63,23 +63,35 @@ Réponds en JSON strict :
                     "Aucun ingrédient comestible détecté. Veuillez corriger votre saisie.",
             });
         }
-
         const recipePrompt = `
 Tu es un chef cuisinier créatif et réaliste.
-N'utilise jamais d'ingrédients non comestibles ni ambigus.
-Assure-toi que toutes les recettes respectent les règles de sécurité alimentaire de la MAPAQ.
-
 À partir des ingrédients suivants : ${validIngredients.join(", ")},
-génère **6 recettes différentes**, selon ces règles :
+génère deux listes distinctes de recettes, selon ces règles :
 
-- Les 3 premières recettes doivent utiliser **strictement** ces ingrédients + ingrédients courants (sel, poivre, huile, beurre, margarine, épices, eau).
-- Les 3 dernières recettes peuvent inclure d'autres ingrédients complémentaires, mais doivent garder les ingrédients de base.
-- Ne crée aucune recette fictive ou absurde.
-- Les quantités et instructions doivent être réalistes et précises.
+1️⃣ **exclusiveRecipes** :
+- Utilisent STRICTEMENT ces ingrédients de base.
+- Tu peux ajouter seulement des ingrédients universels (sel, poivre, huile, beurre, margarine, épices, eau).
+- Doivent être 3 recettes réalistes, complètes, avec quantités et étapes précises.
 
-Formate toujours la réponse en **JSON valide** :
+2️⃣ **extendedRecipes** :
+- Incluent les ingrédients de base, mais peuvent aussi ajouter des ingrédients complémentaires (ex: légumes, protéines, etc.).
+- Doivent aussi être 3 recettes réalistes, équilibrées et comestibles.
+
+Réponds en **JSON valide** strictement au format suivant :
 {
-  "recipes": [
+  "exclusiveRecipes": [
+    {
+      "title": "Titre de la recette",
+      "ingredients": [
+        {"name": "nom de l'ingrédient", "quantity": "valeur + unité"}
+      ],
+      "instructions": [
+        "Étape 1 ...",
+        "Étape 2 ..."
+      ]
+    }
+  ],
+  "extendedRecipes": [
     {
       "title": "Titre de la recette",
       "ingredients": [
@@ -95,8 +107,10 @@ Formate toujours la réponse en **JSON valide** :
 
         const recipeResult = await callGemini(recipePrompt);
 
+        // Étape 3 : Réponse finale
         res.json({
-            ...recipeResult,
+            exclusiveRecipes: recipeResult.exclusiveRecipes || [],
+            extendedRecipes: recipeResult.extendedRecipes || [],
             excludedIngredients: invalidIngredients,
         });
     } catch (err) {
