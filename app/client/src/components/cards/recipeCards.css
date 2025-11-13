@@ -85,7 +85,6 @@
 
 .carousel-area {
     height: auto; /* laisse respirer */
-    min-height: 400px; /* sécurité */
     display: block; /* plus de centrage */
     padding: 2rem 0;
     overflow: visible; /* laisse la grille grandir */

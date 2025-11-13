@@ -75,7 +75,7 @@ export function Home() {
     const nonEdibleIngredients = nonEdible.join(", ");
 
     return (
-        <div className="home-grid w-full h-full">
+        <div className="home-grid w-full">
             {/* zone supérieure : carrousel (apparait après clic) */}
             <div className="carousel-area overflow-auto">
                 {loading && (
